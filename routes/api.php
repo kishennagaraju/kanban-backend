@@ -17,4 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => 'verify_custom_token'], function () {
     Route::get('list-cards', [App\Http\Controllers\Api\Tasks\TasksController::class, 'list']);
     Route::post('board', [App\Http\Controllers\Api\Tasks\TasksController::class, 'save']);
+
+    Route::get('export-db', [App\Http\Controllers\Api\Tasks\TasksController::class, 'exportDb']);
 });

@@ -8,9 +8,23 @@ use App\Http\Requests\CardsRequest;
 use App\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Spatie\DbDumper\Databases\MySql;
 
 class TasksController extends Controller
 {
+    private $_dumper;
+
+    public function __construct()
+    {
+        if (!$this->_dumper) {
+            $this->_dumper = MySql::create()
+                                ->setDbName(env('DB_DATABASE'))
+                                ->setUserName(env('DB_USERNAME'))
+                                ->setPassword(env('DB_PASSWORD'));
+        }
+    }
+
     public function list(Request $request)
     {
         $query = Column::with(['tasks' => function ($taskQuery) use ($request) {
@@ -73,5 +87,13 @@ class TasksController extends Controller
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         return response()->json($data)->setStatusCode(200);
+    }
+
+    public function exportDb()
+    {
+        $filePath = storage_path('app/public') . "/database_dump.sql";
+        $this->_dumper->dumpToFile($filePath);
+
+        return response()->download($filePath, 'database_dump.sql', [], 'attachment');
     }
 }
