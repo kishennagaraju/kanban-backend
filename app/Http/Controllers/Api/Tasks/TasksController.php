@@ -48,7 +48,7 @@ class TasksController extends Controller
     public function save(CardsRequest $request)
     {
         $data = $request->post('data');
-        $data = json_decode($data, true);
+	$data = json_decode($data, true);
 
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
 
@@ -84,7 +84,7 @@ class TasksController extends Controller
             $columnPriority++;
         }
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+	DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         return response()->json($data)->setStatusCode(200);
     }
